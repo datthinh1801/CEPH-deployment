@@ -11,3 +11,8 @@ sudo apt install ntp -y
 ```sh
 sudo apt install python-minimal python3-minimal -y
 ```
+
+- Install `python-routes` on manager nodes.
+```sh
+sudo apt install python-routes -y
+```
