@@ -1,4 +1,7 @@
 # CEPH-deployment
+> Reference: https://computingforgeeks.com/how-to-deploy-ceph-storage-cluster-on-ubuntu-18-04-lts/
+
+
 ## Preparation
 - Install `ntp` on all nodes.
 ```sh
