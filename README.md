@@ -4,7 +4,7 @@
 ```sh
 sudo apt install ntp -y
 ```
-- Install `python-minimal` on all nodes.
+- Install `python-minimal` and `python3-minimal` on all nodes.
 ```sh
-sudo apt install python-minimal -y
+sudo apt install python-minimal python3-minimal -y
 ```
