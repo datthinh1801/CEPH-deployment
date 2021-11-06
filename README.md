@@ -136,8 +136,6 @@ sudo ceph mgr services
 ```
 # Deploy Ceph Block Device
 
-# Config ceph-block devices
-
 ## Client node
 
 ```bash
