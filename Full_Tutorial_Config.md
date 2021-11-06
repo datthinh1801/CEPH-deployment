@@ -167,3 +167,31 @@ I have three devices to use:
   - /dev/sdb
   - /dev/sdc
   - /dev/sdd
+
+- Be sure that the device is not currently in use and does not contain any important data.
+```sh
+for i in sdb sdc sdd; do
+  for j in osd01 osd02 osd03; do
+    ceph-deploy osd create --data /dev/$i $j
+done
+done
+```
+
+- Verify result
+
+```sh
+# lsblk 
+NAME                                                                                                  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                                                                                                     8:0    0   32G  0 disk 
+|-sda1                                                                                                  8:1    0  487M  0 part /boot
+|-sda2                                                                                                  8:2    0  1.9G  0 part [SWAP]
+`-sda3                                                                                                  8:3    0 29.6G  0 part /
+sdb                                                                                                   252:0    0    5G  0 disk 
+`-ceph--908c8792--04e8--414f--8430--faa78e9b18eb-osd--block--275c9d8b--3825--4898--9b3b--5ea080fd7137 253:0    0    5G  0 lvm  
+sdc                                                                                                   252:16   0    5G  0 disk 
+`-ceph--c79a5159--3980--47e8--b649--ed0c44d32d51-osd--block--a50c2ebc--8d65--4d16--9196--6f741606b3a2 253:1    0    5G  0 lvm  
+sdd                                                                                                   252:32   0    5G  0 disk 
+`-ceph--594ff477--943e--49d8--8e08--addf5dbccca3-osd--block--5b71bad9--7fa8--41af--a3af--48af1219aafd 253:2    0    5G  0 lvm
+```
+
+
