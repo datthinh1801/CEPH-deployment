@@ -157,7 +157,8 @@ add ssh config
 
 add alias
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6fc103e9-f437-42ef-bd27-8387bb6b22c9/Untitled.png)
+![image](https://user-images.githubusercontent.com/31529599/140593554-13b6fa56-e3b1-464f-b80a-a89d5d92066a.png)
+
 
 ```bash
 ssh-copy-id ceph-client
