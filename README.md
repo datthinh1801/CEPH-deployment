@@ -134,4 +134,43 @@ To show dashboard url
 ```bash
 sudo ceph mgr services
 ```
+# Deploy Ceph Block Device
 
+# Config ceph-block devices
+
+## Client node
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo reboot 
+sudo apt install ntp -y
+sudo apt install python-minimal
+sudo apt install python-routes
+```
+
+## Admin node
+
+add ssh config
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4611284c-986b-4e7f-b9bf-f943c5a00a6c/Untitled.png)
+
+add alias
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6fc103e9-f437-42ef-bd27-8387bb6b22c9/Untitled.png)
+
+```bash
+ssh-copy-id ceph-client
+ceph-deploy install ceph-client
+ceph-deploy admin ceph-client # in ceph-deploy directory
+```
+
+```bash
+ceph osd pool create datastore 150 150 
+rbd create --size 4096 --pool datastore vol01
+sudo rbd feature disable datastore/vol01 object-map fast-diff deep-flatten # disable any features that are unsupported by the kernel before map
+rbd map vol01 --pool datastore
+mkfs.ext4 -m0 /dev/rbd/datastore/vol01
+mkdir /var/vol01
+mount /dev/rbd/datastore/vol01 /var/vol01
+```
