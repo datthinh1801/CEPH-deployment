@@ -153,7 +153,7 @@ sudo apt install python-routes
 
 add ssh config
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4611284c-986b-4e7f-b9bf-f943c5a00a6c/Untitled.png)
+![image](https://user-images.githubusercontent.com/31529599/140593536-21c53090-11f9-4ba2-bd6b-69c7eb9a4a95.png)
 
 add alias
 
