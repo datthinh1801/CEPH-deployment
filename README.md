@@ -77,6 +77,12 @@ sudo radosgw-admin user create --uid="S3user" --display-name="S3User"
 
 Take note `access_key` and `secret_key`
 
+if forget, use command below to show:
+
+```bash
+sudo ceph radosgw-admin user info --uid=S3user
+```
+
 ## AWS CLI for Accessing Ceph Object Storage
 
 
