@@ -194,4 +194,74 @@ sdd                                                                             
 `-ceph--594ff477--943e--49d8--8e08--addf5dbccca3-osd--block--5b71bad9--7fa8--41af--a3af--48af1219aafd 253:2    0    5G  0 lvm
 ```
 
+### Check your cluster's health
 
+```sh
+sudo ceph health
+```
+
+- Once you have added your new Ceph Monitors, Ceph will begin synchronizing the monitors and form a quorum. You can check the quorum status by executing the following:
+```sh
+ceph quorum_status --format json-pretty
+```
+### Enable Ceph Dashboard
+
+- Enable the Ceph Dashboard module:
+```sh
+sudo ceph mgr module enable dashboard
+sudo ceph mgr module ls
+```
+
+- Generate self signed certificates for the dashboard:
+
+```sh
+sudo ceph dashboard create-self-signed-cert
+```
+
+- Create a user for Dashboard:
+```sh
+sudo ceph dashboard set-login-credentials admin admin
+```
+
+- Enabling the Object Gateway Management Frontend:
+```sh
+sudo radosgw-admin user create --uid=admin --display-name='Ceph Admin' --system
+```
+> Note save `apt-access-key` and `api-secret-key`
+
+- Finally, provide the credentials to the dashboard:
+```sh
+sudo ceph dashboard set-rgw-api-access-key <api-access-key>
+sudo ceph dashboard set-rgw-api-secret-key <api-secret-key>
+```
+
+- If you are using a self-signed certificate in your Object Gateway setup, then you should disable certificate verification:
+```sh
+sudo ceph dashboard set-rgw-api-ssl-verify False
+```
+
+### Add Rados Gateway
+
+- To use the Ceph Object Gateway component of Ceph, you must deploy an instance of RGW. Execute the following to create a new instance of Rados Gateway:
+```sh
+# ceph-deploy rgw create {gateway-node}
+ceph-deploy rgw create rgw
+```
+
+- By default, the RGW instance will listen on port `7480`. This can be changed by editing `ceph.conf` on the node running the RGW as follows:
+```sh
+[client]
+rgw frontends = civetweb port=80
+```
+
+## Resetting your Ceph Cluster
+
+- If at any point you run into trouble and you want to start over, execute the following to purge the Ceph packages, and erase all its data and configuration:
+
+```sh
+ceph-deploy purge {ceph-node} [{ceph-node}]
+ceph-deploy purgedata {ceph-node} [{ceph-node}]
+ceph-deploy forgetkeys
+rm ceph.*
+```
+If you execute purge, you must re-install Ceph. The last rm command removes any files that were written out by ceph-deploy locally during a previous installation.
