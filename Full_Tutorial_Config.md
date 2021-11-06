@@ -164,6 +164,6 @@ sdc    252:16   0    5G  0 disk
 sdd    252:32   0    5G  0 disk
 ```
 I have three devices to use:
-  - /dev/vda
-  - dev/vdb
-  - dev/vdc
+  - /dev/sdb
+  - /dev/sdc
+  - /dev/sdd
