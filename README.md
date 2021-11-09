@@ -1,17 +1,21 @@
 # CEPH storage cluster deployment
 > Reference: https://computingforgeeks.com/how-to-deploy-ceph-storage-cluster-on-ubuntu-18-04-lts/
 
+## Host Installation
+- Nodes should have differentiable hostname because the aliases in `/etc/hosts` must be the same as the hostname. Therefore, same hostnames might cause conflict aliases.  
 
+## Preparation (on all nodes)
+- System update.
+```sh
+sudo apt update && sudo apt upgrade -y && sudo reboot
+```
 
-
-
-
-## Preparation
 - Install `ntp` on all nodes.
 ```sh
 sudo apt install ntp -y
 ```
-- Install `python-minimal` and `python3-minimal` on all nodes.
+
+- Install `python-minimal` and `python3-minimal`.
 ```sh
 sudo apt install python-minimal python3-minimal -y
 ```
@@ -20,6 +24,18 @@ sudo apt install python-minimal python3-minimal -y
 ```sh
 sudo apt install python-routes -y
 ```
+
+- Add alias to the hosts file. This `hosts` file should contain all nodes in the cluster, including the `admin` node, `mon` nodes, `mgr` nodes, `osd` nodes.
+> `client` node will be setup later.
+
+```
+# /etc/hosts
+<ip-address> <alias-name>
+```
+
+
+### On the `admin` node
+- 
 
 - Replace `sudo ceph dashboard ac-user-create <username> <password> <role>` with
 ```sh
