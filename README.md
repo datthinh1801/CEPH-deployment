@@ -337,8 +337,7 @@ sudo ceph mgr services
 # Deploy Ceph Block Device
 
 ## Client node
-
-```bash
+```sh
 sudo apt update
 sudo apt upgrade -y
 sudo reboot 
