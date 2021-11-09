@@ -113,7 +113,7 @@ cd ceph-deploy
 ```
 
 ## Deploy the cluster
-> Commands executed in this section are taken place in `ceph-admin` node.  
+> Commands executed in this section are taken place in `ceph-admin` node, unless specified.  
 
 ### Deploy `mon`, `mgr`, `mds` nodes
 - Add `mon` nodes to the cluster. These nodes are called *initial members* and will run `ceph-mon` when ceph is installed.
@@ -178,9 +178,68 @@ vdd                                                                             
 `-ceph--594ff477--943e--49d8--8e08--addf5dbccca3-osd--block--5b71bad9--7fa8--41af--a3af--48af1219aafd 253:2    0    5G  0 lvm
 ```
 
-- Replace `sudo ceph dashboard ac-user-create <username> <password> <role>` with
+- Check cluster health on a `mon` node.
 ```sh
-sudo ceph dashboard set-login-credentials <username> <password>
+sudo ceph health
+# for more details
+sudo ceph status
+```
+
+### Enable Ceph dashboard
+> Following commands are executed on a `mon` node.  
+
+- Enable the Ceph Dashboard module.
+```sh
+sudo ceph mgr module enable dashboard
+sudo ceph mgr module ls
+```
+
+- Generate a self signed certificates for the dashboard.
+```sh
+sudo ceph dashboard create-self-signed-cert
+```
+
+- Create a user for the dashboard. This user will be used to login the dashboard.
+```sh
+# sudo ceph dashboard set-login-credentials <username> <password>
+sudo ceph dashboard set-login-credentials ceph-admin ceph-admin
+```
+
+- Enable the Object Gateway Management Frontend:
+```sh
+sudo radosgw-admin user create --uid=ceph-admin --display-name='Ceph Admin' --system
+```
+
+- Provide the credentials of `ceph-admin` to the dashboard.
+```sh
+sudo ceph dashboard set-rgw-api-access-key <api-access-key>
+sudo ceph dashboard set-rgw-api-secret-key <api-secret-key>
+```
+
+- Disable certificate verification because we're using a self-signed certificate in our Object Gateway.  
+```sh
+sudo ceph dashboard set-rgw-api-ssl-verify False
+```
+
+### Deploy the RADOS Gateway
+- Add the `rgw` node to cluster.
+```sh
+ceph-deploy rgw create ceph-rgw
+```
+
+- The default port of the gateway will be `7480`. If we want to change it, Add following lines to `ceph.conf` on the `ceph-rgw` node:
+```sh
+[client]
+rgw frontends = civetweb port=80
+```
+
+### Reset the cluster
+- If we have any problem, we can reset the cluster.
+```sh
+ceph-deploy purge {ceph-node} [{ceph-node}]
+ceph-deploy purgedata {ceph-node} [{ceph-node}]
+ceph-deploy forgetkeys
+rm ceph.*
 ```
 
 # Confugure AWS S3 CLI for Ceph cluster storage
