@@ -350,13 +350,18 @@ sudo apt install ntp python-minimal python-routes -y
 # install python3-minimal and python3-routes if using ubuntu >= 20.04
 ```
 
+- Install `python2` if is hasn't been installed on the client.
+```sh
+sudo apt install python2 -y
+```
+
 ## Admin node
 
-add ssh config
+- Add SSH config.
 
 ![image](https://user-images.githubusercontent.com/31529599/140593536-21c53090-11f9-4ba2-bd6b-69c7eb9a4a95.png)
 
-add alias
+- Add alias
 
 ![image](https://user-images.githubusercontent.com/31529599/140593554-13b6fa56-e3b1-464f-b80a-a89d5d92066a.png)
 
