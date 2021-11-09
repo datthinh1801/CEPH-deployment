@@ -242,120 +242,98 @@ ceph-deploy forgetkeys
 rm ceph.*
 ```
 
-# Confugure AWS S3 CLI for Ceph cluster storage
-
-## Install AWS S3 on Ubuntu/Debian
-
-Install Pip
-
-```bash
---- Ubuntu 20.04 ---
+## Confugure AWS S3 CLI for Ceph Object Gateway Storage
+### Install AWS S3 CLI on the client
+- Install `pip`.
+```sh
+# Ubuntu 20.04
 sudo apt update
 sudo apt -y install python3-pip
 
---- Other Ubuntu / Debian --- (ubuntu 18.04)
+# Other Ubuntu / Debian
 sudo apt-get update
 sudo apt-get -y install python-pip
 ```
-Upgrade Pip
-
-```bash
---- Ubuntu 20.04 ---
+- Upgrade `pip`.
+```sh
+# Ubuntu 20.04 
 sudo pip3 install --upgrade pip
 
---- Other Ubuntu / Debian ---
+# Other Ubuntu / Debian 
 sudo pip install --upgrade pip
 ```
-
-Install and Upgrade AWS CLI
-
-```bash
---- Ubuntu 20.04 ---
+- Install and Upgrade AWS CLI.
+```sh
+# Ubuntu 20.04
 sudo pip3 install awscli
 sudo pip3 install awscli --upgrade
 
---- Other Ubuntu / Debian ---
+# Other Ubuntu / Debian
 sudo pip install awscli
 sudo pip install awscli --upgrade
 ```
 
+- Check the installation
 ```
 aws --version
 ```
 
-## Configure Ceph aws s3 client
-
-### On mon node
-
-```bash
+### Configure Object Storage User for S3 access
+- Create a new Object Storage user.
+```sh
+# on a mon node
 sudo radosgw-admin user create --uid="S3user" --display-name="S3User"
 ```
 
-Take note `access_key` and `secret_key`
-
-if forget, use command below to show:
-
-```bash
+- Take note the `access_key` and `secret_key`. If we forget, use command below to show:
+```sh
+# on a mon node
 sudo ceph radosgw-admin user info --uid=S3user
 ```
 
-## AWS CLI for Accessing Ceph Object Storage
-
-
-```bash
+## Configure the client for accessing Ceph Object Storage
+```sh
 aws configure --profile=ceph 
 AWS Access Key ID [None]: access_key
 AWS Secret Access Key [None]: secret_key
 Default region name [None]:
 Default output format [None]: json
 ```
-Connect to Radosgw:
 
-rgw: 192.168.226.137 and running on port 7480 (if default)
-
-Make bucket: 
-
-```bash
-aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 mb s3://test
+- Make a new bucket for a data object: 
+```sh
+# aws --profile=ceph --endpoint=http://{rgw-node-ip}:{gateway-port} s3 mb s3://{path-on-ceph}
+aws --profile=ceph --endpoint=http://10.1.1.150:7480 s3 mb s3://test
 ```
-
-Check bucket on mgr node:
-
-```bash
+- Check the bucket on a `mon` node:
+```sh
 sudo radosgw-admin bucket list
 [
-    "jkmutai-bucket",
     "test"
 ]
 ```
-
-List bucket created with command:
-
-```bash
-aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 ls
+- If we are on the `client` node, use the following command to list all buckets:
+```sh
+aws --profile=ceph --endpoint=http://{rgw-node-ip}:{gateway-port} s3 ls
 ```
 
-Copy file local to bucket in cluster:
-
-```bash
-aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 cp upload_file.txt s3://test/
+- Copy a file to a bucket in the Object Storage cluster:
+```sh
+aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 cp {file_to_upload} s3://{bucket-name}
 ```
 
-list file in bucket:
-
-```bash
+- list file in bucket:
+```sh
 aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 ls s3://test/
 ```
 
-## Check bucket on Dashboard
-
-On mgr node:
-
-To show dashboard url
-
-```bash
+## Check bucket on the Ceph Dashboard
+On a `mgr` node:
+- To show the dashboard url
+```sh
 sudo ceph mgr services
 ```
+
 # Deploy Ceph Block Device
 
 ## Client node
