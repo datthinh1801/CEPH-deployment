@@ -3,6 +3,7 @@
 
 ## Host Installation
 - Nodes should have differentiable hostname because the aliases in `/etc/hosts` must be the same as the hostname. Therefore, same hostnames might cause conflict aliases.  
+- In this guide, we used `ceph-admin`, `ceph-mon1`, `ceph-mon2`, `ceph-mon3`, `ceph-osd1`, `ceph-osd2`, `ceph-osd3`, `ceph-rgw`.
 
 ## Preparation (on all nodes)
 - System update.
@@ -30,12 +31,152 @@ sudo apt install python-routes -y
 
 ```
 # /etc/hosts
-<ip-address> <alias-name>
+10.1.1.130 ceph-admin
+10.1.1.131 ceph-mon1
+10.1.1.132 ceph-mon2
+10.1.1.133 ceph-mon3
+10.1.1.141 ceph-osd1
+10.1.1.142 ceph-osd2
+10.1.1.143 ceph-osd3
+10.1.1.150 ceph-rgw
 ```
 
+- Create a `ceph-user` user with passwordless sudo privileges.
+```sh
+sudo useradd --create-home -s /bin/bash ceph-user
+echo "ceph-user:ceph-user" | sudo chpasswd
+echo "ceph-user ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ceph-user
+sudo chmod 0440 /etc/sudoers.d/ceph-user
+```
 
 ### On the `admin` node
-- 
+> In following sections, `ceph-user` is in used.  
+
+- Install `ceph-deploy`
+```sh
+wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
+echo deb https://download.ceph.com/debian-nautilus/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+sudo apt update && sudo apt install -y ceph-deploy
+```
+
+- Generate SSH keys
+```sh
+ssh-keygen
+```
+
+- Configure `.ssh/config`
+```sh
+Host ceph-admin
+    Hostname ceph-admin
+    User ceph-user
+
+Host ceph-mon1
+    Hostname ceph-mon1
+    User ceph-user
+    
+Host ceph-mon2
+    Hostname ceph-mon2
+    User ceph-user
+    
+Host ceph-mon3
+    Hostname ceph-mon3
+    User ceph-user
+    
+Host ceph-osd1
+    Hostname ceph-osd1
+    User ceph-user
+
+Host ceph-osd2
+    Hostname ceph-osd2
+    User ceph-user
+
+Host ceph-osd3
+    Hostname ceph-osd3
+    User ceph-user
+
+Host ceph-rgw
+    Hostname ceph-rgw
+    User ceph-user
+```
+
+- Distribute ssh public key.
+```sh
+for i in ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw; do
+    ssh-copy-id $i
+done
+```
+
+- Make a `ceph-deploy` directory to store `ceph-deploy` logs and configuration files.
+```sh
+mkdir ceph-deploy
+cd ceph-deploy
+```
+
+## Deploy the cluster
+> Commands executed in this section are taken place in `ceph-admin` node.  
+
+### Deploy `mon`, `mgr`, `mds` nodes
+- Add `mon` nodes to the cluster. These nodes are called *initial members* and will run `ceph-mon` when ceph is installed.
+```sh
+ceph-deploy new ceph-mon1 ceph-mon2 ceph-mon3
+```
+
+- Install Ceph packages on all nodes.
+```sh
+ceph-deploy ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw
+```
+
+- Create initial monitors in the cluster.
+```sh
+ceph-deploy mon create-initial
+```
+
+- Deploy `mgr` daemons.
+```sh
+ceph-deploy mgr create ceph-mon1 ceph-mon2 ceph-mon3
+```
+
+- Deploy metadata servers.
+```sh
+ceph-deploy mds create ceph-mon1 ceph-mon2 ceph-mon3
+```
+
+### Deploy `osd` nodes
+- SSH to `osd` nodes and inspect available hard disks.
+```sh
+lsblk
+```
+
+- Copy the configuration file and admin key to all nodes, including the `ceph-admin`.
+```sh
+ceph-deploy ceph-admin ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw
+```
+
+- Deploy `osd` daemons on these disks.
+```sh
+# ceph-deploy osd create --data {device} {ceph-node}
+for i in sdb sdc sdd; do
+    for j in ceph-osd1 ceph-osd2 ceph-osd3; do
+        ceph-deploy osd create --data /dev/$i $j
+    done
+done
+```
+
+- Use `lsblk` to inspect if previous available disks are attached to ceph osd daemons. Example:
+```sh
+lsblk 
+NAME                                                                                                  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                                                                                                     8:0    0   32G  0 disk 
+|-sda1                                                                                                  8:1    0  487M  0 part /boot
+|-sda2                                                                                                  8:2    0  1.9G  0 part [SWAP]
+`-sda3                                                                                                  8:3    0 29.6G  0 part /
+vdb                                                                                                   252:0    0    5G  0 disk 
+`-ceph--908c8792--04e8--414f--8430--faa78e9b18eb-osd--block--275c9d8b--3825--4898--9b3b--5ea080fd7137 253:0    0    5G  0 lvm  
+vdc                                                                                                   252:16   0    5G  0 disk 
+`-ceph--c79a5159--3980--47e8--b649--ed0c44d32d51-osd--block--a50c2ebc--8d65--4d16--9196--6f741606b3a2 253:1    0    5G  0 lvm  
+vdd                                                                                                   252:32   0    5G  0 disk 
+`-ceph--594ff477--943e--49d8--8e08--addf5dbccca3-osd--block--5b71bad9--7fa8--41af--a3af--48af1219aafd 253:2    0    5G  0 lvm
+```
 
 - Replace `sudo ceph dashboard ac-user-create <username> <password> <role>` with
 ```sh
