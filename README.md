@@ -337,13 +337,17 @@ sudo ceph mgr services
 # Deploy Ceph Block Device
 
 ## Client node
+- System update.
 ```sh
 sudo apt update
 sudo apt upgrade -y
-sudo reboot 
-sudo apt install ntp -y
-sudo apt install python-minimal
-sudo apt install python-routes
+sudo reboot
+```
+
+- Install dependencies.
+```sh
+sudo apt install ntp python-minimal python-routes -y
+# install python3-minimal and python3-routes if using ubuntu >= 20.04
 ```
 
 ## Admin node
