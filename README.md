@@ -357,27 +357,54 @@ sudo apt install python2 -y
 
 ## Admin node
 
-- Add SSH config.
+- Add an entry to the SSH config.
+```sh
+Host {client-host}
+    Hostname {client-hostname}
+    User {client-ceph-user}
+```
 
-![image](https://user-images.githubusercontent.com/31529599/140593536-21c53090-11f9-4ba2-bd6b-69c7eb9a4a95.png)
+- Add an entry to the `hosts` file.
+```sh
+{client-ip} {client-hostname}
+```
 
-- Add alias
-
-![image](https://user-images.githubusercontent.com/31529599/140593554-13b6fa56-e3b1-464f-b80a-a89d5d92066a.png)
-
-
+- Add the client to the cluster.
 ```bash
 ssh-copy-id ceph-client
 ceph-deploy install ceph-client
-ceph-deploy admin ceph-client # in ceph-deploy directory
+ceph-deploy admin ceph-client
 ```
 
-```bash
-ceph osd pool create datastore 150 150 
-rbd create --size 4096 --pool datastore vol01
-sudo rbd feature disable datastore/vol01 object-map fast-diff deep-flatten # disable any features that are unsupported by the kernel before map
-rbd map vol01 --pool datastore
+- Create a new pool for storing block devices.
+```sh
+sudo ceph osd pool create {pool-name} {pg-num} {pgp-num}
+```
+
+- Create a block device image.
+```sh
+sudo rbd create --size {image-size} --pool {pool-name} {image-name}
+```
+
+- Disable features not supported by the kernel before mapping block device.
+```sh
+sudo rbd feature disable datastore/vol01 object-map fast-diff deep-flatten
+```
+
+- On the client, map the image to the system.
+> This is similar to attaching a hard drive/USB to the computer.  
+
+```
+sudo rbd map vol01 --pool datastore
+```
+
+- Format the block device.
+```
 mkfs.ext4 -m0 /dev/rbd/datastore/vol01
+```
+
+- Mount the block device to the filesystem.
+```
 mkdir /var/vol01
 mount /dev/rbd/datastore/vol01 /var/vol01
 ```
