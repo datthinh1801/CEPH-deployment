@@ -335,8 +335,7 @@ sudo ceph mgr services
 ```
 
 # Deploy Ceph Block Device
-
-## Client node
+## Prepare the client node
 - System update.
 ```sh
 sudo apt update
@@ -355,8 +354,8 @@ sudo apt install ntp python-minimal python-routes -y
 sudo apt install python2 -y
 ```
 
-## Admin node
-
+## Install Ceph for the client node
+### On admin node
 - Add an entry to the SSH config.
 ```sh
 Host {client-host}
@@ -376,9 +375,15 @@ ceph-deploy install ceph-client
 ceph-deploy admin ceph-client
 ```
 
+### On client node
 - Create a new pool for storing block devices.
 ```sh
 sudo ceph osd pool create {pool-name} {pg-num} {pgp-num}
+```
+
+- Associate the pool to the `rbd` application so that we can manage it on the dashboard.
+```sh
+sudo ceph osd pool application enable {pool-name} rbd
 ```
 
 - Create a block device image.
@@ -407,4 +412,12 @@ mkfs.ext4 -m0 /dev/rbd/datastore/vol01
 ```
 mkdir /var/vol01
 mount /dev/rbd/datastore/vol01 /var/vol01
+```
+
+- Remove the block device.
+```sh
+umount /var/vol01
+rbd unmap /dev/rbd/datastore/vol01
+rbd rm vol01 -p datastore
+ceph osd pool delete datastore datastore --yes-i-really-really-mean-it
 ```
