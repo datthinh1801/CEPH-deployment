@@ -288,7 +288,7 @@ sudo radosgw-admin user create --uid="S3user" --display-name="S3User"
 - Take note the `access_key` and `secret_key`. If we forget, use command below to show:
 ```sh
 # on a mon node
-sudo ceph radosgw-admin user info --uid=S3user
+sudo radosgw-admin user info --uid=S3user
 ```
 
 ## Configure the client for accessing Ceph Object Storage
