@@ -292,6 +292,7 @@ sudo radosgw-admin user info --uid=S3user
 ```
 
 ## Configure the client for accessing Ceph Object Storage
+- On the client node, run `aws configure --profile=ceph`.
 ```sh
 aws configure --profile=ceph 
 AWS Access Key ID [None]: access_key
@@ -300,12 +301,12 @@ Default region name [None]:
 Default output format [None]: json
 ```
 
-- Make a new bucket for a data object: 
+- Make a new bucket: 
 ```sh
 # aws --profile=ceph --endpoint=http://{rgw-node-ip}:{gateway-port} s3 mb s3://{path-on-ceph}
 aws --profile=ceph --endpoint=http://10.1.1.150:7480 s3 mb s3://test
 ```
-- Check the bucket on a `mon` node:
+- On a `mon` node, issue the following command to list all buckets:
 ```sh
 sudo radosgw-admin bucket list
 [
@@ -322,7 +323,7 @@ aws --profile=ceph --endpoint=http://{rgw-node-ip}:{gateway-port} s3 ls
 aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 cp {file_to_upload} s3://{bucket-name}
 ```
 
-- list file in bucket:
+- list files in a bucket:
 ```sh
 aws --profile=ceph --endpoint=http://192.168.226.137:7480 s3 ls s3://test/
 ```
