@@ -1,4 +1,8 @@
 # Demonstration
+## Adding/Removing an OSD
+> For adding/removing an osd: See [this](https://docs.ceph.com/en/latest/rados/operations/add-or-rm-osds/#removing-osds-manual).  
+
+## Inspecting its migration process
 - List all objects of a pool.
 ```sh
 rados -p {pool-name} ls
@@ -14,3 +18,4 @@ ceph ps ls-by-pool {pool-name}
 ```sh
 ceph ps map {PG-ID}
 ```
+
