@@ -401,24 +401,31 @@ sudo rbd feature disable datastore/vol01 object-map fast-diff deep-flatten
 > This is similar to attaching a hard drive/USB to the computer.  
 
 ```
-sudo rbd map vol01 --pool datastore
+sudo rbd map {image-name} --pool {pool-name}
 ```
 
 - Format the block device.
 ```
-mkfs.ext4 -m0 /dev/rbd/datastore/vol01
+# mkfs.ext -m0 {device-path}
+e.g.: mkfs.ext4 -m0 /dev/rbd/{pool-name}/{image-name}
 ```
 
 - Mount the block device to the filesystem.
 ```
-mkdir /var/vol01
-mount /dev/rbd/datastore/vol01 /var/vol01
+# Create a directory as a mountpoint for the block device
+mkdir {mount-point}
+# Mount the block device to the mountpoint
+mount /dev/rbd/{pool-name}/{image-name} {mount-point}
 ```
 
 - Remove the block device.
 ```sh
-umount /var/vol01
-rbd unmap /dev/rbd/datastore/vol01
-rbd rm vol01 -p datastore
-ceph osd pool delete datastore datastore --yes-i-really-really-mean-it
+# Unmount the block device from the filesystem
+umount {mount-point}
+# Remove the mapping of the block device from the whole system
+rbd unmap /dev/rbd/{pool-name}/{image-name}
+# Remove the block image
+rbd rm {image-name} -p {pool-name}
+# Delete the pool
+ceph osd pool delete {pool-name} {pool-name} --yes-i-really-really-mean-it
 ```
