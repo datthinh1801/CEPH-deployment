@@ -145,9 +145,9 @@ ceph-deploy mds create ceph-mon1 ceph-mon2 ceph-mon3
 lsblk
 ```
 
-- Copy the configuration file and admin key to all nodes, including the `ceph-admin`.
+- Copy the configuration file and admin key to all nodes.
 ```sh
-ceph-deploy ceph-admin ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw
+ceph-deploy admin ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw
 ```
 
 - Deploy `osd` daemons on these disks.
