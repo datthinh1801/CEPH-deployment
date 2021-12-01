@@ -121,7 +121,7 @@ ceph-deploy new ceph-mon1 ceph-mon2 ceph-mon3
 
 - Install Ceph packages on all nodes.
 ```sh
-ceph-deploy ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw
+ceph-deploy install ceph-mon1 ceph-mon2 ceph-mon3 ceph-osd1 ceph-osd2 ceph-osd3 ceph-rgw
 ```
 
 - Create initial monitors in the cluster.
