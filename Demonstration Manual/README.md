@@ -74,8 +74,7 @@ If more than one osd node is down then placement group will down too
 
 ## Adding/Removing an OSD
 
-### Remove OSD node
-> For adding/removing an osd: See [this](https://docs.ceph.com/en/latest/rados/operations/add-or-rm-osds/#removing-osds-manual).  
+> For adding/removing an osd: See [this](https://docs.ceph.com/en/latest/rados/operations/add-or-rm-osds/#removing-osds-manual) and [my note](https://best-dream-976.notion.site/Add-and-Remove-Osd-host-c66b87c3430e49f58d619fb546be6970).  
 
 ## Inspecting its migration process
 - List all objects of a pool.
