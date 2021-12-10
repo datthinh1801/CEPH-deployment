@@ -278,6 +278,8 @@ aws --version
 ```
 
 ### Configure Object Storage User for S3 access
+[link video](https://youtu.be/SXpBne0O7Bw)
+
 - Create a new Object Storage user.
 ```sh
 # on a mon node
@@ -335,6 +337,8 @@ sudo ceph mgr services
 ```
 
 # Deploy Ceph Block Device
+[link video](https://youtu.be/jpQHRJ_Jyrs)
+
 ## Prepare the client node
 - System update.
 ```sh
