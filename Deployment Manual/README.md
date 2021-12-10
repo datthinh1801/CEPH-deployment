@@ -1,4 +1,5 @@
 # CEPH storage cluster deployment
+[Link video deploymeny](https://www.youtube.com/watch?v=-xK_JWbDR7o&feature=youtu.be)
 ## Host Installation
 - Nodes should have differentiable hostname because the aliases in `/etc/hosts` must be the same as the hostname. Therefore, same hostnames might cause conflict aliases.  
 - In this guide, we used `ceph-admin`, `ceph-mon1`, `ceph-mon2`, `ceph-mon3`, `ceph-osd1`, `ceph-osd2`, `ceph-osd3`, `ceph-rgw`.
