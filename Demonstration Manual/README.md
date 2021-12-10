@@ -1,6 +1,7 @@
 # Demonstration
 
 ## Replicate
+[link video](https://youtu.be/Q64CnQ6cSWA)
 Configuration: 1 admin host, 2 monitor hosts, 2 osd host (each contain 3 osd node)
 > set `min_size` replicate required to 1 (number of osd hosts not meet the default configuration)
 > 
