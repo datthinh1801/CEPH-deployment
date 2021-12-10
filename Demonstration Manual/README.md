@@ -2,6 +2,7 @@
 
 ## Replicate
 [link video](https://youtu.be/Q64CnQ6cSWA)
+
 Configuration: 1 admin host, 2 monitor hosts, 2 osd host (each contain 3 osd node)
 > set `min_size` replicate required to 1 (number of osd hosts not meet the default configuration)
 > 
@@ -32,6 +33,8 @@ Configuration: 1 admin host, 2 monitor hosts, 2 osd host (each contain 3 osd nod
 - Try to download file again then start osd node
 
 ## Demo automate map/unmap on boot/shutdown
+[link video](https://youtu.be/wDV1NHh-Hs4)
+
 - Root privilege on client
     - config `/etc/ceph/rbdmap` to access cluster
         - `<pool-name>/<image> id=admin,keyring=/etc/ceph/ceph.client.admin.keyring`
@@ -42,6 +45,8 @@ Configuration: 1 admin host, 2 monitor hosts, 2 osd host (each contain 3 osd nod
 
 
 ## Erasure coding
+[link video](https://youtu.be/d1Vllk3t0Pw)
+
 ```bash
 ceph osd erasure-code-profile set myprofile \
    k=2 \
@@ -74,7 +79,7 @@ Because `m=1` so if a node is down then placement group store object data will w
 If more than one osd node is down then placement group will down too
 
 ## Adding/Removing an OSD
-
+[link video](https://youtu.be/pfKMSOi_IPc)
 > For adding/removing an osd: See [this](https://docs.ceph.com/en/latest/rados/operations/add-or-rm-osds/#removing-osds-manual) and [my note](https://best-dream-976.notion.site/Add-and-Remove-Osd-host-c66b87c3430e49f58d619fb546be6970).  
 
 ## Inspecting its migration process
